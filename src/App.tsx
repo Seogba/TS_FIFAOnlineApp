@@ -14,7 +14,8 @@ function App() {
   } 
   
   const [playerName , setPlayerName] = useState<string>("");
-  const [playerData , setPlayerData] = useState<any>([]);
+  const [playerID , setPlayerID] = useState<string>("");
+  const [playerData , setPlayerData] = useState<any>();
   const [dataExist , setDataExist] = useState<boolean>(false);
   
 
@@ -26,13 +27,16 @@ function App() {
       {
         method: "GET",
         headers: {
-          Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6Ijk0MDE1OTM4MSIsImF1dGhfaWQiOiIyIiwiZXhwIjoxNjc4MzcyMTg0LCJpYXQiOjE2NjI4MjAxODQsIm5iZiI6MTY2MjgyMDE4NCwic2VydmljZV9pZCI6IjQzMDAxMTQ4MSIsInRva2VuX3R5cGUiOiJBY2Nlc3NUb2tlbiJ9.leauru723Bw7SKcQPlwbXUibcT280fU3u2YLm9R8Cjc"
+          Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
         },
-      }
+      } //개발자센터 로그인시 넥슨아이디(0403)으로 로그인 할것
     ).then((res) => {
       console.log("res.data" , res.data);
       setPlayerData(res.data);
       setDataExist(true);
+      console.log(playerData)
+      setPlayerID(playerData.accessId)
+      console.log(playerData.accessId)
     }).catch((err) => {
       console.log(err);
     });
@@ -47,7 +51,9 @@ function App() {
       placeholder='닉네임' onChange={(event:React.ChangeEvent<HTMLInputElement>)=>setPlayerName(event.target.value)} />
       <button onClick={callUserData}>검색</button>
       </div>
-      <div className='user-data'></div>
+      <div className='select-search'>
+
+      </div>
     </div>
   );
 }

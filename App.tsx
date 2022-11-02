@@ -1,54 +1,136 @@
-import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import axios from 'axios'
+import { keyboard } from '@testing-library/user-event/dist/keyboard';
+import React, { useEffect ,  useState } from 'react';
+import "./App.css"
 
-
+//localStorage = 브라우저 닫았다가 다시 열어도 유지, 살제될때 까지 유지
+//sessionStorage = 브라우저 세션 기간동안만 사용가능. 창닫으면 삭제
 
 function App() {
-  interface data{
-    accessId : string,
-    nickname:string,
-    level:number
+
+  
+interface ITodo {
+  text: string;
+  complete: boolean; 
+}
+
+
+  const [inputValue, setInputValue] = useState<string>('');
+  const [todoList, setTodoList] = useState<ITodo[]>([]);
+  const [todoDate , setTodoDate] = useState<any[]>([]);
+
+
+  useEffect(()=> {
+    window.localStorage.setItem('todoList' , JSON.stringify(todoList))
+  },[todoList])
+
+  useEffect(() =>{
+    const savedTodolist = JSON.parse(window.localStorage.getItem('todoList') || "");
+
+    if(savedTodolist != null){
+      setTodoList(savedTodolist)
+    }
+   
+  } , [])
+
+  // useEffect(() =>{
+  //   const savedTodoList = localStorage.getItem('todoList');
+  //   if(savedTodoList){
+  //     setTodoList(JSON.parse(savedTodoList));
+  //   }
+  // },[])
+
+  // useEffect(() =>{
+  //   localStorage.setItem('todoList' , JSON.stringify(todoList))
+  // },[todoList])
+
+  
+
+  const handleSubmit = (e:  React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    addTodo(inputValue);
+    addDate();
+    setInputValue('');
+  };
+
+  const addDate = () => {
+    let date = new Date();
+    const newDate = new Intl.DateTimeFormat('kr' , {dateStyle: 'full' , timeStyle : "full"}).format(date);
+    setTodoDate([ newDate]);
   }
 
-  
-  
-  const [playerName , setPlayerName] = useState<string>("잭팟풀")
-  
-  // useEffect(() => {
-  //   axios(`https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${playerName}`).then((res)=>{
-  //     console.log("res.data" , res.data.json)
-  //   }).catch((err) => {
-  //     console.log(err);
-  //   })
-  // },[playerName]);
+  const addTodo = (text: string) => {
+    const newTodos: ITodo[] = [...todoList, { text, complete: false }];
+    setTodoList(newTodos);
+  };
 
-  useEffect(()=>{
-    axios({
-      url: `https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${playerName}`,
-      method: "GET",
-      headers:{
-        "KeyName":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjE2Nzc5Nzk4NzciLCJhdXRoX2lkIjoiMiIsImV4cCI6MTY3ODEyMjkxNiwiaWF0IjoxNjYyNTcwOTE2LCJuYmYiOjE2NjI1NzA5MTYsInNlcnZpY2VfaWQiOiI0MzAwMTE0ODEiLCJ0b2tlbl90eXBlIjoiQWNjZXNzVG9rZW4ifQ.EMMb3J8HgjFCM6Qzfg2DpbSfW0k506S4HTMgpxRYqbs"
-      },
-    }).then((res)=>
-    {console.log("res.data: ",res.data.json)}).catch((err) =>{
-      console.log(err);
+  const deleteTodo = (index: number) => {
+   
+    const newTodos: ITodo[] = [...todoList];
+    newTodos.splice(index, 1);
+    setTodoList(newTodos);
+  };
+
+  const clearTodo = () =>{
+    setTodoList([]);
+  }
+
+  // const sortTodo = () =>{
+  //  const copyTodo = todoList.map((todo:ITodo) => (
+  //   todo.text
+  //  ))
+  //  copyTodo.sort()
+  //  setTodoList(copyTodo)
+  // }
+
+  const sortTodo = () =>{
+    const copyTodo: ITodo[] = [...todoList];
+    copyTodo.sort((firstObject:ITodo , secondObject:ITodo) =>{
+      if(firstObject.text > secondObject.text) return 1;
+      if(firstObject.text < secondObject.text) return -1;
+      return 0;
     })
-    },[playerName]);
+    setTodoList(copyTodo)
+  }
 
-//  useEffect(()=>{
-//   fetch(`https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname={playerName}`).then((res) => res.json)
-//  })
+  const completeTodo = (index: number) => {
+    const newTodos: ITodo[] = [...todoList];
+  
+    newTodos[index].complete = !newTodos[index].complete;
+    setTodoList(newTodos);
+  };
+
 
   return (
-    <div className="App">
-      <div>
-      <input type="text" className='input-nickname'
-      placeholder='닉네임' onChange={(event:React.ChangeEvent<HTMLInputElement>)=>setPlayerName(event.target.value)} />
+    <div>
+      <h1>Todo List</h1>
+      <div className='input-todo'>
+        <form onSubmit={handleSubmit} >
+          <input type='text' value={inputValue} 
+          onChange={e => setInputValue(e.target.value)}
+          required/>
+          <button type='submit'> Add Todo</button>
+        </form>
+        <button onClick={clearTodo}>Clear</button>
+        <button onClick={sortTodo}>Sort</button> 
+      </div>
+      <div className='show-todo'>
+        {todoList.map((todo:ITodo , index:number) => (
+          <div key={index}
+          style={{textDecoration: todo.complete ? 'line-through' : ""}}>
+            <div className='todo-box'>
+              <div>
+            {todo.text}
+            </div>
+            <div>
+            {todoDate}
+            </div>
+            </div>
+            <button onClick={() => completeTodo(index)}>완료</button>
+            <button onClick={() => deleteTodo(index)}>delete</button>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
-
 export default App;

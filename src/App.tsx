@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios'
+import MaxDivision from './Component/MaxDivision';
+import BottomNav from './Component/BottomNav';
 
 
 
@@ -19,9 +21,11 @@ function App() {
   const [dataExist , setDataExist] = useState<boolean>(false);
   
 
-  //유저의 닉네임을 통해 고유 식별자 , 레벨 등을 가져온다
+  
+  //유저의 닉네임을 통해 고유 식별자(ID) , 레벨 등을 가져온다
 
   const callUserData = (() => {
+
     axios(
       `https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${playerName}`,
       {
@@ -32,15 +36,16 @@ function App() {
       } //개발자센터 로그인시 넥슨아이디(0403)으로 로그인 할것
     ).then((res) => {
       console.log("res.data" , res.data);
-      setPlayerData(res.data);
-      setDataExist(true);
-      console.log(playerData)
-      setPlayerID(playerData.accessId)
-      console.log(playerData.accessId)
+      setPlayerData(()=>res.data);
+      console.log("playerData" , playerData);
+      setPlayerID( playerData.accessId);
+      console.log("Player ID :" , playerData.accessId);
+      setDataExist((dataExist) => true);
     }).catch((err) => {
       console.log(err);
     });
-  })
+  })   //useState 동기처리 필요
+  
 
   
 
@@ -52,9 +57,13 @@ function App() {
       <button onClick={callUserData}>검색</button>
       </div>
       <div className='select-search'>
-
+        {(dataExist) ? <MaxDivision/> : ""}
+      </div>
+      <div className='bottom-navigation'>
+        <BottomNav />
       </div>
     </div>
+    
   );
 }
 

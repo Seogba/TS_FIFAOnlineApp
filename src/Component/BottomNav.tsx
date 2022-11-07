@@ -1,6 +1,12 @@
+import { useEffect } from "react";
 
 
 const BottomNav = () => {
+
+    useEffect(()=> console.log('버그입니다'))
+   
+      
+ 
 
     return(
         <div>

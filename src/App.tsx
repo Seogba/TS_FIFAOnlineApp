@@ -4,6 +4,7 @@ import './App.css';
 import axios from 'axios'
 import MaxDivision from './Component/MaxDivision';
 import BottomNav from './Component/BottomNav';
+import CallMetadata from './Component/CallMetadata';
 
 
 
@@ -47,20 +48,23 @@ function App() {
   })   //useState 동기처리 필요
   
 
-  
+
+
+  //form 새로고침?
 
   return (
     <div className="App">
       <div className='search-user'>
-      <input type="text" className='input-nickname'
-      placeholder='닉네임' onChange={(event:React.ChangeEvent<HTMLInputElement>)=>setPlayerName(event.target.value)} />
-      <button onClick={callUserData}>검색</button>
+       <input type="text" className='input-nickname'
+       placeholder='닉네임' onChange={(event:React. ChangeEvent<HTMLInputElement>)=>setPlayerName(event.target.value)} />
+       <button onClick={callUserData}>검색</button>
       </div>
       <div className='select-search'>
         {(dataExist) ? <MaxDivision/> : ""}
       </div>
       <div className='bottom-navigation'>
         <BottomNav />
+        <CallMetadata />
       </div>
     </div>
     

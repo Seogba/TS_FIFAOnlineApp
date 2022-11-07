@@ -15,14 +15,20 @@ const MaxDivision = () =>{
               },
             } 
           ).then((res) => {
-           console.log("res data:" , res);
+           console.log("res data:" , res.data);
           }).catch((err) => {
             console.log(err);
           });}
     },[PlayerID])
+
+    const searchMatchType = (playerMatchData:number[]) =>{
+      // playerMatchData.forEach
+    }
+
+
     return(
         <div>
-            <h1>Player Data Exist!</h1>
+            <h1>Player Data(Match Data) Exist!</h1>
         </div>
     )
 }

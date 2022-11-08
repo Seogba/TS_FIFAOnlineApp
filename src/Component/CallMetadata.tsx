@@ -1,5 +1,12 @@
 import { useEffect } from "react"
 import axios from "axios";
+import {
+    useQuery,
+    useQueryClient,
+    QueryClient,
+    QueryClientProvider,
+  } from "@tanstack/react-query";
+  import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 //참고용 컴포넌트. 최종에서 제외할 것
 

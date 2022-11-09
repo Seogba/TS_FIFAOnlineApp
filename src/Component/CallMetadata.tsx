@@ -10,45 +10,67 @@ import {
 
 //참고용 컴포넌트. 최종에서 제외할 것
 
+
+
 const CallMetadata = () =>{
 
-    useEffect(()=>{
-        axios(
-            `https://static.api.nexon.co.kr/fifaonline4/latest/matchtype.json`, 
-            {
-              method: "GET",
-              headers: {
-                Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
-              },
-            } 
-          ).then((res) => {
-           console.log("메타데이터(매치타입) : " , res.data);
-          }).catch((err) => {
-            console.log(err);
-          })
-    })
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        suspense: true,
+      },
+    },
+  });
 
-    useEffect(()=>{
-        axios(
-            `https://static.api.nexon.co.kr/fifaonline4/latest/division.json`, 
-            {
-              method: "GET",
-              headers: {
-                Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
-              },
-            } 
-          ).then((res) => {
-           console.log("등급데이터: " , res.data);
-          }).catch((err) => {
-            console.log(err);
-          })
-    })
+   const {isLoading , error , data} = useQuery({
+    queryKey: ['metaData_1'],
+    queryFn: () => fetch(
+      `https://static.api.nexon.co.kr/fifaonline4/latest/matchtype.json`, 
+      {
+        method: "GET",
+        headers: {
+          Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
+        },
+      } 
+    ).then((res) => res.json())
+   })
+
+   if (isLoading){
+    return 'Loading,,,'
+   }
+
+   if(error){
+    return 'error: ' 
+   }
+
+
+    // useEffect(()=>{
+    //     axios(
+    //         `https://static.api.nexon.co.kr/fifaonline4/latest/division.json`, 
+    //         {
+    //           method: "GET",
+    //           headers: {
+    //             Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
+    //           },
+    //         } 
+    //       ).then((res) => {
+    //        console.log("등급데이터: " , res.data);
+    //       }).catch((err) => {
+    //         console.log(err);
+    //       })
+    // })
 
 
     return (
+      <QueryClientProvider client={queryClient}>
         <div>
-            <h6>just test</h6>
+            {data.map((item:any) => (
+              <div key={item.id}>
+                <li>{item.matchtype}</li>
+              </div>
+            ))}
         </div>
+        </QueryClientProvider>
     )
 }
 

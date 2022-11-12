@@ -15,12 +15,15 @@ import {
 
 
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+    },
+  },
+});
 
 function App() {
-
- 
-
   
   interface data{
     accessId : string,
@@ -59,76 +62,29 @@ function App() {
   //   });
   // })   //useState 동기처리 필요
 
-  const callUserData = async() => {
-     const res = await fetch(
-      `https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${playerName}`,
+  const {isLoading , error , data} = useQuery({
+    queryKey: ['playerData'],
+    queryFn: () => fetch(
+      `https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${playerName}`, 
       {
         method: "GET",
         headers: {
           Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
         },
       } 
-    )
+    ).then((res) => res.json())
+   })
 
-    return res.json(); 
-    
-  }
+   if (isLoading){
+    return 'Loading,,,'
+   }
 
-  // --------------------------------
-
-  // const {data, status, isPreviousData } = useQuery(
-  //   ['userKey'] , 
-  //   callUserData,
-  //   {
-  //     keepPreviousData: true
-  //   }
-  // )
-
-  // console.log(isPreviousData);
-
-  
-  // if (status === "loading") {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (status === "error") {
-  //   return <div>Error</div>;
-  // }
-
-  // ---------------------------
-
-   // const useCallUserData = () =>{
-  //   const { isLoading, error, data } = useQuery({
-  //     queryKey: ['userData'],
-  //     queryFn: () => fetch(
-  //       `https://api.nexon.co.kr/fifaonline4/v1.0/users?nickname=${playerName}`,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
-  //         },
-  //       } 
-  //     ).then((res) => res.json())
-  //   })
-
-  //   if(isLoading) return 'loading,,,';
-
-  //   if(error) {
-  //     return 'error:' + error;
-  //   }
-
-  //   return (
-  //     <div>{data}</div>
-  //   )
-  // }
+   if(error){
+    return 'error: ' 
+   }
 
 
-
-  
-  
-
-
-
+ 
   //form 새로고침?
 
   return (
@@ -137,14 +93,14 @@ function App() {
           <div className='search-user'>
            <input type="text" className='input-nickname'
            placeholder='닉네임' onChange={(event:React. ChangeEvent<HTMLInputElement>)=>setPlayerName(event.target.value)} />
-           <button onClick={callUserData}>검색</button>
+           <button >검색</button>
           </div>
           <div className='select-search'>
             {(dataExist) ? <MaxDivision/> : ""}
           </div>
           <div className='bottom-navigation'>
             <BottomNav />
-           
+            {playerData.map((item:any) => item.accessId)}
           </div>
         </div>
       

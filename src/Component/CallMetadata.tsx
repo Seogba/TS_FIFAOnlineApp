@@ -70,7 +70,7 @@ const CallMetadata = () =>{
               </div>
             ))}
         </div>
-        </QueryClientProvider>
+       </QueryClientProvider>
     )
 }
 

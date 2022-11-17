@@ -14,14 +14,6 @@ import {
 
 const CallMetadata = () =>{
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        suspense: true,
-      },
-    },
-  });
-
    const {isLoading , error , data} = useQuery({
     queryKey: ['metaData_1'],
     queryFn: () => fetch(
@@ -36,41 +28,22 @@ const CallMetadata = () =>{
    })
 
    if (isLoading){
-    return 'Loading,,,'
+    return (<h1> Loading,,, </h1>)
    }
 
    if(error){
-    return 'error: ' 
+    return (<h1> error: </h1>) 
    }
 
-
-    // useEffect(()=>{
-    //     axios(
-    //         `https://static.api.nexon.co.kr/fifaonline4/latest/division.json`, 
-    //         {
-    //           method: "GET",
-    //           headers: {
-    //             Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJYLUFwcC1SYXRlLUxpbWl0IjoiNTAwOjEwIiwiYWNjb3VudF9pZCI6IjM0MjA0NDM2IiwiYXV0aF9pZCI6IjIiLCJleHAiOjE2ODI4OTQ1MDMsImlhdCI6MTY2NzM0MjUwMywibmJmIjoxNjY3MzQyNTAzLCJzZXJ2aWNlX2lkIjoiNDMwMDExNDgxIiwidG9rZW5fdHlwZSI6IkFjY2Vzc1Rva2VuIn0.7weok3kREEL3lwxOLAHS6H-G7cMStlxQ1hVtxceuYZU"
-    //           },
-    //         } 
-    //       ).then((res) => {
-    //        console.log("등급데이터: " , res.data);
-    //       }).catch((err) => {
-    //         console.log(err);
-    //       })
-    // })
-
-
     return (
-      <QueryClientProvider client={queryClient}>
-        <div>
+      <div>
             {data.map((item:any) => (
               <div key={item.id}>
                 <li>{item.matchtype}</li>
               </div>
             ))}
-        </div>
-       </QueryClientProvider>
+      </div>
+  
     )
 }
 

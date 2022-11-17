@@ -10,20 +10,13 @@ import {
   QueryClientProvider,
   useQueryErrorResetBoundary,
   useQuery,
-  useMutation
+  useMutation,
+  useQueryClient
 } from 'react-query';
 
-
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      suspense: true,
-    },
-  },
-});
-
 function App() {
+
+  const queryClient = new QueryClient();
   
   interface data{
     accessId : string,
@@ -62,6 +55,8 @@ function App() {
   //   });
   // })   //useState 동기처리 필요
 
+
+  //No QueryClient set 오류
   const {isLoading , error , data} = useQuery({
     queryKey: ['playerData'],
     queryFn: () => fetch(
@@ -76,11 +71,11 @@ function App() {
    })
 
    if (isLoading){
-    return 'Loading,,,'
+    return (<h1> loading,,, </h1>)
    }
 
    if(error){
-    return 'error: ' 
+    return (<h1> error </h1>)
    }
 
 
@@ -88,23 +83,26 @@ function App() {
   //form 새로고침?
 
   return (
-   <QueryClientProvider client={queryClient}>
+  
         <div className="App">
           <div className='search-user'>
            <input type="text" className='input-nickname'
            placeholder='닉네임' onChange={(event:React. ChangeEvent<HTMLInputElement>)=>setPlayerName(event.target.value)} />
            <button >검색</button>
           </div>
-          <div className='select-search'>
-            {(dataExist) ? <MaxDivision/> : ""}
+          <div className='select-search'>     
+          <QueryClientProvider client={queryClient}>
+            <CallMetadata />
+          </QueryClientProvider>   
           </div>
           <div className='bottom-navigation'>
             <BottomNav />
             {playerData.map((item:any) => item.accessId)}
           </div>
         </div>
+ 
       
-   </QueryClientProvider>
+
     
   );
 }
